@@ -8,6 +8,7 @@ import errorHandler from "./common/middleware/error-handler.middleware";
 import { initDB } from "./services/database.services";
 import routes from "./router";
 import { IUser } from "./modules/user/user.dto";
+import { limiter } from "./common/middleware/ratelimit.middleware";
 const port = Number(process.env.port) || 3000;
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
+app.use(limiter)
 
 const initApp = async (): Promise<void> => {
   await initDB();

@@ -51,11 +51,14 @@ const http_errors_1 = __importDefault(require("http-errors"));
 const response_helper_1 = require("../../common/helper/response.helper");
 const jwt_services_1 = require("../../services/jwt.services");
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("hitting user controler...");
     const { username, password, gmail } = req.body;
     const existUser = yield userService.getUserByGmail(gmail);
     if (existUser) {
         throw (0, http_errors_1.default)(402, "user with this gmail alreay exist !");
     }
+    const ipAddrss = req.ip;
+    console.log("debuggin the ip of user", ipAddrss);
     const result = yield userService.createUser(req.body);
     res.send((0, response_helper_1.createResponse)(result, "User created succesfully"));
 });

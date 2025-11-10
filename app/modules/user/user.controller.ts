@@ -5,11 +5,15 @@ import { createResponse } from "../../common/helper/response.helper";
 import { generateToken, validPassword } from "../../services/jwt.services";
 
 export const createUser = async (req: Request, res: Response) => {
+   console.log("hitting user controler...")
   const { username, password, gmail } = req.body;
   const existUser = await userService.getUserByGmail(gmail);
   if (existUser) {
     throw createHttpError(402, "user with this gmail alreay exist !");
   }
+
+  const ipAddrss = req.ip ;
+  console.log("debuggin the ip of user" , ipAddrss); 
 
   const result = await userService.createUser(req.body);
   res.send(createResponse(result, "User created succesfully"));

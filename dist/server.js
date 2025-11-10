@@ -21,6 +21,7 @@ const config_helper_1 = require("./common/helper/config.helper");
 const error_handler_middleware_1 = __importDefault(require("./common/middleware/error-handler.middleware"));
 const database_services_1 = require("./services/database.services");
 const router_1 = __importDefault(require("./router"));
+const ratelimit_middleware_1 = require("./common/middleware/ratelimit.middleware");
 const port = Number(process.env.port) || 3000;
 const app = (0, express_1.default)();
 // middlewares
@@ -28,6 +29,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.urlencoded({ extended: false }));
+app.use(ratelimit_middleware_1.limiter);
 const initApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, database_services_1.initDB)();
     app.use("/api", router_1.default);
