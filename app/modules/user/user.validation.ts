@@ -1,5 +1,6 @@
 import {body , checkExact} from  "express-validator";
 
+
 export const login = checkExact([
     body("gmail")
     .notEmpty()

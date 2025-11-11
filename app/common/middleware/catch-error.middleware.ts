@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { validationResult } from "express-validator";
+import  {validationResult}  from "express-validator";
 import createHttpError from "http-errors";
 import asynchandler from "express-async-handler"
 export const catchError =  asynchandler((req: Request, res: Response, next: NextFunction) => {

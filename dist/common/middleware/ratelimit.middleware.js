@@ -1,23 +1,55 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginLimiter = exports.limiter = void 0;
-const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const express_rate_limit_1 = __importStar(require("express-rate-limit"));
+// Generic rate limiter (for general APIs)
 exports.limiter = (0, express_rate_limit_1.default)({
-    windowMs: 1 * 60 * 1000, // 1 minute window
+    windowMs: 1 * 60 * 1000, // 1 minute
     max: 5, // limit each IP to 5 requests per window
     message: "Too many requests from this IP, please try again later.",
-    standardHeaders: true, // Return rate limit info in headers
-    legacyHeaders: false,
-    keyGenerator: (req) => req.ip, // Use the IP as the unique identifier
+    standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
+    legacyHeaders: false, // Disable the old `X-RateLimit-*` headers
+    keyGenerator: (req, res) => (0, express_rate_limit_1.ipKeyGenerator)(req, res), // IPv6 safe
 });
+// Login-specific rate limiter (more strict)
 exports.loginLimiter = (0, express_rate_limit_1.default)({
-    windowMs: 1 * 60 * 1000, // 1 minute window
-    max: 3, // only 5 login attempts per IP per minute
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 3, // limit each IP to 3 login attempts per window
     message: "Too many login attempts from this IP, please try again later.",
-    standardHeaders: true, // Return rate limit info in headers
+    standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.ip, // Use the IP as the unique identifier
+    keyGenerator: (req, res) => (0, express_rate_limit_1.ipKeyGenerator)(req, res), // IPv6 safe
 });

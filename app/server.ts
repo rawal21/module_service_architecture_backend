@@ -18,7 +18,7 @@ declare global {
   namespace Express {
     interface User extends Omit<IUser, "password"> {}
     interface Request {
-      user: User;
+      user?: User;
     }
   }
 }
