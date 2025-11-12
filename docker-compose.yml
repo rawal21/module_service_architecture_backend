@@ -5,15 +5,18 @@ services:
     build: .
     container_name: backend-app
     ports:
-      - "3000:3000"
+      - "3000:3000"  # The port your host will expose
     environment:
       - NODE_ENV=development
       - PORT=4000
+      # ✅ Use the container name "mongo" and "redis" instead of localhost
       - MONGO_URL=mongodb://mongo:27017/backend_db
       - REDIS_URL=redis://redis:6379
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy   # ✅ Wait until MongoDB is ready
+      redis:
+        condition: service_started
     restart: always
 
   mongo:
@@ -24,6 +27,13 @@ services:
     volumes:
       - mongo_data:/data/db
     restart: always
+    # ✅ Add healthcheck so backend waits until MongoDB is ready
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   redis:
     image: redis:7.4-alpine

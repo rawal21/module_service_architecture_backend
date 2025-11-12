@@ -17,7 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const initDB = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield new Promise((resolve, reject) => {
         var _a;
-        const mongodbUri = (_a = process.env.MONGODB_URI) !== null && _a !== void 0 ? _a : "";
+        const mongodbUri = (_a = process.env.MONGO_URI) !== null && _a !== void 0 ? _a : "";
         if (mongodbUri === "")
             throw new Error("mongod db uri not found!");
         // mongoose.set("debug", true);
